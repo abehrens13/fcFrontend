@@ -1,5 +1,10 @@
 pipeline {
-	agent any
+	agent {
+        docker {
+            image 'node:6-alpine'
+            args '-p 3003:3000'
+        }
+    }
     options {
     	timeout(time: 15, unit: 'MINUTES')
     	disableConcurrentBuilds()
@@ -9,6 +14,7 @@ pipeline {
     	DOCKERID = "feb18"
     	IMAGE = 'fcfrontend'
     	VERSION = '0.0.2-SNAPSHOT'
+		CI = 'true'
   	}
 
 	stages {
@@ -25,7 +31,6 @@ pipeline {
 
 
 		/**=======================*/
-		//https://igorski.co/sonarqube-scans-using-jenkins-declarative-pipelines/
 		stage('SonarCloud') {
   			environment {
     			SCANNER_HOME = tool 'MySonarQubeScanner'
@@ -37,5 +42,18 @@ pipeline {
   			}
 		}
 
+		/**=======================*/
+        stage('Build') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+		/**=======================*/
+		stage('Test') {
+            steps {
+                sh './jenkins/scripts/test.sh'
+            }
+        }
 	}
 }
