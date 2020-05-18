@@ -18,7 +18,6 @@ function App() {
           rel="noopener noreferrer"
         >
         </a>
-        <Question />
       </header>
     </div>
   );

@@ -12,9 +12,14 @@
   "author": "CodeMix",
   "license": "ISC",
   "dependencies": {
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-scripts": "^2.1.5"
+    "@material-ui/core": "^4.9.14",
+    "@material-ui/icons": "^4.9.1",
+    "material-ui": "^0.20.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "^2.1.8",
+    "typeface-roboto": "0.0.75",
+    "typescript": "^3.9.2"
   },
   "browserslist": [
     ">0.2%",
