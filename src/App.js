@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Question from './components/Question'
 
 function App() {
   return (
@@ -16,11 +17,8 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React!
-          <br/>
-          Das will ich ja.
-
         </a>
+        <Question />
       </header>
     </div>
   );
