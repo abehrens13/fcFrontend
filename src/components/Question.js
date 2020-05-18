@@ -20,15 +20,56 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const defaultBoxProps = {
+const defaultOuterBoxProps = {
 	bgcolor: 'background.paper',
 	borderColor: 'text.primary',
 	m: 1,
 	border: 1,
+	borderRadius: 5
+
+};
+const defaultInnerBoxProps = {
+	bgcolor: 'background.paper',
+	borderColor: 'text.primary',
+	m: 1,
+	border: 0,
+	borderRadius: 5
 
 };
 
+
 export default function Question() {
+	const classes = useStyles();
+	return (
+		<div className={classes.root}>
+			<FormControl component="fieldset" className={classes.formControl}>
+
+
+				<Box  {...defaultOuterBoxProps}>
+					<Box  {...defaultInnerBoxProps}>
+						<h6>Question 1 of 30</h6>
+					</Box>
+					<Box {...defaultInnerBoxProps}>
+						<p>All around me are familiar faces Worn out places, worn out faces Bright and early for the daily races Going nowhere, going nowhere. Their tears are filling up their glasses No expression, no expression Hide my head I wanna drown my sorrow No tomorrow, no tomorrow. And I find it kind of funny I find it kind of sad</p>
+					</Box>
+					<Box {...defaultInnerBoxProps}>
+						<p>(choose the best)</p>
+					</Box>
+					<Box {...defaultInnerBoxProps}>
+						<p>A lot of answers</p>
+					</Box>
+					<Box {...defaultInnerBoxProps}>
+						<p>Explanation</p>
+					</Box>
+
+				</Box>
+			</FormControl>
+
+		</div>
+	)
+}
+
+export function Question2() {
 	const classes = useStyles();
 	const [state, setState] = React.useState({
 		gilad: true,
@@ -46,17 +87,8 @@ export default function Question() {
 		<div className={classes.root}>
 
 			<Box display="flex" justifyContent="center">
-				<Box borderRadius={16} {...defaultBoxProps}>
-					<FormLabel component="legend">Question 1 of 30</FormLabel>
-				</Box>
-				<Box borderRadius={16} {...defaultBoxProps}>
-					<Typography variant="body1" gutterBottom>
-						<p>What is what us drive the most?</p>
-					</Typography>
-				</Box>
-				<Box borderRadius={16} {...defaultBoxProps}>
-
-				</Box>
+				<FormLabel component="legend">Question 1 of 30</FormLabel>
+				<p>What is what us drive the most?</p>
 
 			</Box>
 
