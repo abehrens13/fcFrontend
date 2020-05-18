@@ -1,10 +1,5 @@
 pipeline {
-	agent {
-        docker {
-            image 'node:6-alpine'
-            args '-p 3003:3000'
-        }
-    }
+	agent any
     options {
     	timeout(time: 15, unit: 'MINUTES')
     	disableConcurrentBuilds()
