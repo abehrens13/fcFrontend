@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Question from './components/Question'
+import Monitor from './components/Monitor'
 //import App from './App'
 
 ReactDOM.render(
 	//	<App />,
-	<Question />,
+	<Monitor />,
 	document.getElementById('root')
 );
