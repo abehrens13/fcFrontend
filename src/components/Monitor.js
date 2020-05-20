@@ -43,7 +43,7 @@ const defaultInnerBoxProps = {
 };
 
 
-export default function Monitor({ hostname, ip, timestamp, statusRedis, statusServer, statusOverall }) {
+export default function Monitor({ monitorStatus }) {
 	const classes = useStyles();
 
 	return (
@@ -58,18 +58,18 @@ export default function Monitor({ hostname, ip, timestamp, statusRedis, statusSe
 							<div>Timestamp</div>
 						</Grid>
 						<Grid item xs={6}>
-							<div>{hostname}</div>
-							<div>{ip}</div>
-							<div>{timestamp}</div>
+							<div>{monitorStatus.hostname}</div>
+							<div>{monitorStatus.ip}</div>
+							<div>{monitorStatus.timestamp}</div>
 						</Grid>
 					</Grid>
 				</Box>
 				<Box {...defaultInnerBoxProps} borderBottom="0" borderRadius="0"></Box>
 				<Box {...defaultInnerBoxProps} borderTop="0">
 					<Grid container item xc={3} justify="center">
-						<MyChip name="Redis" status={statusRedis} />
-						<MyChip name="Server" status={statusServer} />
-						<MyChip name="Overall" status={statusOverall} />
+						<MyChip name="Redis" status={monitorStatus.statusRedis} />
+						<MyChip name="Server" status={monitorStatus.statusServer} />
+						<MyChip name="Overall" status={monitorStatus.statusOverall} />
 					</Grid>
 					<Box {...defaultInnerBoxProps} border="0" />
 				</Box>
