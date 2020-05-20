@@ -64,7 +64,6 @@ const defaultMonitorStatus = {
 	statusRedis: "OK",
 	statusSystem: "OK",
 	statusOverall: "FAILURE"
-
 }
 
 export default function Monitor({ monitorUrl }) {
