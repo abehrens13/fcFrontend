@@ -1,6 +1,5 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-
 import { Container, DialogTitle, Chip, Avatar, Grid, Box } from '@material-ui/core';
 import LensIcon from '@material-ui/icons/Lens';
 
@@ -43,6 +42,20 @@ const defaultInnerBoxProps = {
 };
 
 
+function getLang() {
+	if (navigator.languages !== undefined)
+		return navigator.languages[0];
+	else
+		return navigator.language;
+}
+
+function changeTime(time) {
+	const locale = getLang();
+	var date = new Date(time);
+	return date.toLocaleDateString(locale) + " " + date.toLocaleTimeString(locale);
+}
+
+
 export default function Monitor({ monitorStatus }) {
 	const classes = useStyles();
 
@@ -59,8 +72,8 @@ export default function Monitor({ monitorStatus }) {
 						</Grid>
 						<Grid item xs={6}>
 							<div>{monitorStatus.hostname}</div>
-							<div>{monitorStatus.ip}</div>
-							<div>{monitorStatus.timestamp}</div>
+							<div>{monitorStatus.inetAddress}</div>
+							<div>{changeTime(monitorStatus.currentTime)}</div>
 						</Grid>
 					</Grid>
 				</Box>
@@ -68,7 +81,7 @@ export default function Monitor({ monitorStatus }) {
 				<Box {...defaultInnerBoxProps} borderTop="0">
 					<Grid container item xc={3} justify="center">
 						<MyChip name="Redis" status={monitorStatus.statusRedis} />
-						<MyChip name="Server" status={monitorStatus.statusServer} />
+						<MyChip name="System" status={monitorStatus.statusSystem} />
 						<MyChip name="Overall" status={monitorStatus.statusOverall} />
 					</Grid>
 					<Box {...defaultInnerBoxProps} border="0" />
