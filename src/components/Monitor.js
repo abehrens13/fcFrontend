@@ -94,8 +94,18 @@ export default function Monitor({ monitorUrl }) {
 	};
 
 	async function loadMonitor() {
-		let my = await fetchMonitor(monitorUrl);
-		setMonitorStatus(my);
+		try {
+			let my = await fetchMonitor(monitorUrl);
+			setMonitorStatus(my);
+		} catch (error) {
+			let my = monitorStatus;
+			my.statusRedis = "FAILURE";
+			my.statusOverall = "FAILURE";
+			my.statusSystem = "FAILURE";
+			setMonitorStatus(my);
+			console.log(error);
+		}
+
 	}
 
 	function updateButton() {
@@ -131,18 +141,12 @@ export default function Monitor({ monitorUrl }) {
 				</Box>
 				<Box {...defaultInnerBoxProps} borderBottom="0" borderRadius="0"></Box>
 				<Box {...defaultInnerBoxProps} borderTop="0">
-					<Grid container item xc={6} justify="center">
+					<Grid container item xc={3} justify="center">
 						<MyChip name="Redis" status={monitorStatus.statusRedis} />
 						<MyChip name="System" status={monitorStatus.statusSystem} />
 						<MyChip name="Overall" status={monitorStatus.statusOverall} />
-
-						<Chip
-							avatar={<Avatar><RefreshIcon color="primary" /></Avatar>}
-							label="Refresh"
-							variant="outlined"
-							onClick={updateButton}
-							disabled={switchState}
-						/>
+					</Grid>
+					<Grid container item xc={2} justify="center">
 						<Chip
 							avatar={<Avatar>
 								{switchState ? <AlarmOnIcon color="primary" /> : <AlarmOffIcon color="primary" />}
@@ -150,6 +154,13 @@ export default function Monitor({ monitorUrl }) {
 							label="Auto Refresh"
 							variant="outlined"
 							onClick={handleSwitchChange}
+						/>
+						<Chip
+							avatar={<Avatar><RefreshIcon color="primary" /></Avatar>}
+							label="Refresh"
+							variant="outlined"
+							onClick={updateButton}
+							disabled={switchState}
 						/>
 
 					</Grid>
