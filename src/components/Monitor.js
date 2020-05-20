@@ -2,7 +2,8 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Container, DialogTitle, Chip, Avatar, Grid, Box } from '@material-ui/core';
 import LensIcon from '@material-ui/icons/Lens';
-
+import RefreshIcon from '@material-ui/icons/Refresh';
+import fetchMonitor from '../backend/fetchMonitor'
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -55,9 +56,32 @@ function changeTime(time) {
 	return date.toLocaleDateString(locale) + " " + date.toLocaleTimeString(locale);
 }
 
+const defaultMonitorStatus = {
+	hostname: "host",
+	inetAddress: "127.0.0.1",
+	currentTime: "2020-05-20T19:52:27.433Z",
+	statusRedis: "OK",
+	statusSystem: "OK",
+	statusOverall: "FAILURE"
 
-export default function Monitor({ monitorStatus }) {
+}
+
+export default function Monitor({ monitorUrl }) {
 	const classes = useStyles();
+	const [monitorStatus, setMonitorStatus] = React.useState(defaultMonitorStatus);
+	const [refresh, setRefresh] = React.useState(0);
+
+	React.useEffect(() => { loadMonitor() }, [refresh]);
+
+
+	async function loadMonitor() {
+		let my = await fetchMonitor(monitorUrl);
+		setMonitorStatus(my);
+	}
+
+	function updateButton() {
+		setRefresh(refresh + 1);
+	}
 
 	return (
 		<div className={classes.root}>
@@ -68,7 +92,7 @@ export default function Monitor({ monitorStatus }) {
 						<Grid item xs={6}>
 							<div>Hostname</div>
 							<div>IP-Adress</div>
-							<div>Timestamp</div>
+							<div>Last Check</div>
 						</Grid>
 						<Grid item xs={6}>
 							<div>{monitorStatus.hostname}</div>
@@ -79,10 +103,16 @@ export default function Monitor({ monitorStatus }) {
 				</Box>
 				<Box {...defaultInnerBoxProps} borderBottom="0" borderRadius="0"></Box>
 				<Box {...defaultInnerBoxProps} borderTop="0">
-					<Grid container item xc={3} justify="center">
+					<Grid container item xc={4} justify="center">
 						<MyChip name="Redis" status={monitorStatus.statusRedis} />
 						<MyChip name="System" status={monitorStatus.statusSystem} />
 						<MyChip name="Overall" status={monitorStatus.statusOverall} />
+						<Chip
+							avatar={<Avatar><RefreshIcon /></Avatar>}
+							label="Refresh"
+							variant="outlined"
+							onClick={updateButton}
+						/>
 					</Grid>
 					<Box {...defaultInnerBoxProps} border="0" />
 				</Box>
