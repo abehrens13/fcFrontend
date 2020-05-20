@@ -4,7 +4,8 @@ import { Container, DialogTitle, Chip, Avatar, Grid, Box } from '@material-ui/co
 import LensIcon from '@material-ui/icons/Lens';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import fetchMonitor from '../backend/fetchMonitor'
-
+import AlarmOffIcon from '@material-ui/icons/AlarmOff';
+import AlarmOnIcon from '@material-ui/icons/AlarmOn';
 const useStyles = makeStyles((theme) => ({
 	root: {
 		display: 'flex',
@@ -70,9 +71,27 @@ export default function Monitor({ monitorUrl }) {
 	const classes = useStyles();
 	const [monitorStatus, setMonitorStatus] = React.useState(defaultMonitorStatus);
 	const [refresh, setRefresh] = React.useState(0);
-
+	const [switchState, setSwitchState] = React.useState(true);
+	const [currentCount, setCount] = React.useState(0);
 	React.useEffect(() => { loadMonitor() }, [refresh]);
+	React.useEffect(
+		() => {
+			if (currentCount < 0) {
+				return;
+			}
+			const id = setInterval(timer, 1000);
+			return () => clearInterval(id);
+		},
+		[currentCount]
+	);
 
+
+	const timer = () => {
+		if (currentCount >= 0) {
+			setCount(currentCount + 1)
+			loadMonitor();
+		}
+	};
 
 	async function loadMonitor() {
 		let my = await fetchMonitor(monitorUrl);
@@ -81,6 +100,15 @@ export default function Monitor({ monitorUrl }) {
 
 	function updateButton() {
 		setRefresh(refresh + 1);
+	}
+
+	function handleSwitchChange() {
+		if (switchState !== true) {
+			setCount(0);
+		} else {
+			setCount(-10);
+		}
+		setSwitchState(!switchState);
 	}
 
 	return (
@@ -103,16 +131,27 @@ export default function Monitor({ monitorUrl }) {
 				</Box>
 				<Box {...defaultInnerBoxProps} borderBottom="0" borderRadius="0"></Box>
 				<Box {...defaultInnerBoxProps} borderTop="0">
-					<Grid container item xc={4} justify="center">
+					<Grid container item xc={6} justify="center">
 						<MyChip name="Redis" status={monitorStatus.statusRedis} />
 						<MyChip name="System" status={monitorStatus.statusSystem} />
 						<MyChip name="Overall" status={monitorStatus.statusOverall} />
+
 						<Chip
-							avatar={<Avatar><RefreshIcon /></Avatar>}
+							avatar={<Avatar><RefreshIcon color="primary" /></Avatar>}
 							label="Refresh"
 							variant="outlined"
 							onClick={updateButton}
+							disabled={switchState}
 						/>
+						<Chip
+							avatar={<Avatar>
+								{switchState ? <AlarmOnIcon color="primary" /> : <AlarmOffIcon color="primary" />}
+							</Avatar>}
+							label="Auto Refresh"
+							variant="outlined"
+							onClick={handleSwitchChange}
+						/>
+
 					</Grid>
 					<Box {...defaultInnerBoxProps} border="0" />
 				</Box>
