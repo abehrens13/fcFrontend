@@ -90,6 +90,12 @@ var defaultMonitorHealth =
 				"threshold": 0
 			}
 		},
+		"mongo": {
+			"status": "UNKNOWN",
+			"details": {
+				"version": "0"
+			}
+		},
 		"fcBackend": {
 			"status": "UNKNOWN",
 			"details": {
@@ -159,6 +165,7 @@ export default function Monitor({ monitorHealthUrl, monitorInfoUrl }) {
 			my.components.diskSpace.status = "DOWN";
 			my.components.ping.status = "DOWN";
 			my.components.fcBackend.status = "DOWN";
+			my.components.mongo.status = "DOWN";
 			my.status = "DOWN";
 			setMonitorHealth(my);
 			console.log(error);
@@ -221,6 +228,7 @@ export default function Monitor({ monitorHealthUrl, monitorInfoUrl }) {
 				<Box {...defaultInnerBoxProps} borderTop="0">
 					<Grid container item xc={3} justify="center">
 						<MyChip name="Redis" status={monitorHealth.components.redis.status} />
+						<MyChip name="Mongo" status={monitorHealth.components.mongo.status} />
 						<MyChip name="Disk" status={monitorHealth.components.diskSpace.status} />
 						<MyChip name="Ping" status={monitorHealth.components.ping.status} />
 						<MyChip name="fcBackend" status={monitorHealth.components.fcBackend.status} />
