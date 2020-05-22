@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function Answers() {
+export default function Answer() {
 	const classes = useStyles();
 
 	return (
@@ -29,14 +29,7 @@ export default function Answers() {
 						control={<Checkbox checked={answerA} onChange={handleChange} name="gilad" />}
 						label="Rot ist was anderes als Grün"
 					/>
-					<FormControlLabel
-						control={<Checkbox checked={answerB} onChange={handleChange} name="jason" />}
-						label="Blau sieht nur selten aus wie Rot"
-					/>
-					<FormControlLabel
-						control={<Checkbox checked={answerC} onChange={handleChange} name="antoine" />}
-						label="Wenn man Rot und Grün mischt, entsteht ein schmutziges Braun."
-					/>
+
 				</FormGroup>
 			</FormControl>
 		</div >
