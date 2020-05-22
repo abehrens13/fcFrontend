@@ -10,7 +10,7 @@ export default function DevApp() {
 
   return (
     <div className="App">
-      <Monitor monitorUrl='http://localhost:8000/monitor' />
+      <Monitor monitorHealthUrl='http://localhost:8000/actuator/health' monitorInfoUrl='http://localhost:8000/actuator/info' />
     </div>
   );
 }

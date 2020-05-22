@@ -16,8 +16,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function setColor(statustype) {
-	if (statustype === "OK") return "darkgreen";
-	else if (statustype === "FAILURE") return "darkred";
+	if (statustype === "UP") return "darkgreen";
+	else if (statustype === "DOWN") return "darkred";
 	else return "grey";
 }
 
@@ -57,22 +57,75 @@ function changeTime(time) {
 	return date.toLocaleDateString(locale) + " " + date.toLocaleTimeString(locale);
 }
 
-const defaultMonitorStatus = {
-	hostname: "host",
-	inetAddress: "127.0.0.1",
-	currentTime: "2020-05-20T19:52:27.433Z",
-	statusRedis: "OK",
-	statusSystem: "OK",
-	statusOverall: "FAILURE"
+
+var defaultMonitorInfo =
+{
+	"app": {
+		"name": "UNKNOWN",
+		"description": "UNKNOWN",
+		"version": "UNKNOWN",
+		"encoding": "UNKNOWN",
+		"java": {
+			"version": "UNKNOWN"
+		}
+	},
+	"build": {
+		"version": "UNKNOWN",
+		"artifact": "UNKNOWN",
+		"name": "UNKNOWN",
+		"group": "UNKNOWN",
+		"time": "0"
+	}
 }
 
-export default function Monitor({ monitorUrl }) {
+var defaultMonitorHealth =
+{
+	"status": "UNKNOWN",
+	"components": {
+		"diskSpace": {
+			"status": "UNKNOWN",
+			"details": {
+				"total": 0,
+				"free": 0,
+				"threshold": 0
+			}
+		},
+		"fcBackend": {
+			"status": "UNKNOWN",
+			"details": {
+				"app": "0",
+				"error": "0"
+			}
+		},
+		"ping": {
+			"status": "UNKNOWN"
+		},
+		"redis": {
+			"status": "UNKNOWN",
+			"details": {
+				"version": "0"
+			}
+		}
+	}
+}
+function extend(obj1, obj2) {
+	var result = obj1, val;
+	for (val in obj2) {
+		if (obj2.hasOwnProperty(val)) {
+			result[val] = obj2[val];
+		}
+	}
+	return result;
+}
+export default function Monitor({ monitorHealthUrl, monitorInfoUrl }) {
 	const classes = useStyles();
-	const [monitorStatus, setMonitorStatus] = React.useState(defaultMonitorStatus);
+	const [monitorHealth, setMonitorHealth] = React.useState(defaultMonitorHealth);
+	const [monitorInfo, setMonitorInfo] = React.useState(defaultMonitorInfo);
 	const [refresh, setRefresh] = React.useState(0);
 	const [switchState, setSwitchState] = React.useState(true);
 	const [currentCount, setCount] = React.useState(0);
-	React.useEffect(() => { loadMonitor() }, [refresh]);
+	React.useEffect(() => { loadHealthMonitor() }, [refresh]);
+	React.useEffect(() => { loadInfoMonitor() }, [refresh]);
 	React.useEffect(
 		() => {
 			if (currentCount < 0) {
@@ -88,24 +141,40 @@ export default function Monitor({ monitorUrl }) {
 	const timer = () => {
 		if (currentCount >= 0) {
 			setCount(currentCount + 1)
-			loadMonitor();
+			loadHealthMonitor();
+			loadInfoMonitor();
 		}
 	};
 
-	async function loadMonitor() {
+	async function loadHealthMonitor() {
+		//console.log(monitorHealth);
 		try {
-			let my = await fetchMonitor(monitorUrl);
-			setMonitorStatus(my);
+			let my = await fetchMonitor(monitorHealthUrl);
+			//console.log(my);
+			setMonitorHealth(extend(defaultMonitorHealth, my));
+			//console.log(my);
 		} catch (error) {
-			let my = monitorStatus;
-			my.statusRedis = "FAILURE";
-			my.statusOverall = "FAILURE";
-			my.statusSystem = "FAILURE";
-			setMonitorStatus(my);
+			let my = monitorHealth;
+			my.components.redis.status = "DOWN";
+			my.components.diskSpace.status = "DOWN";
+			my.components.ping.status = "DOWN";
+			my.components.fcBackend.status = "DOWN";
+			my.status = "DOWN";
+			setMonitorHealth(my);
 			console.log(error);
 		}
-
 	}
+
+	async function loadInfoMonitor() {
+		//console.log(monitorStatus);
+		try {
+			let my = await fetchMonitor(monitorInfoUrl);
+			setMonitorInfo(extend(defaultMonitorInfo, my));
+		} catch{
+			//do nothing
+		}
+	}
+
 
 	function updateButton() {
 		setRefresh(refresh + 1);
@@ -127,23 +196,35 @@ export default function Monitor({ monitorUrl }) {
 					<DialogTitle id="alert-dialog-title"><center>Server Status</center></DialogTitle>
 					<Grid container spacing={2}>
 						<Grid item xs={6}>
-							<div>Hostname</div>
-							<div>IP-Adress</div>
-							<div>Last Check</div>
+							<div>App-Name</div>
+							<div>App-description</div>
+
+							<div>Build-version</div>
+							<div>Build-artifact</div>
+							<div>Build-name</div>
+							<div>Build-group</div>
+							<div>Build-time</div>
 						</Grid>
 						<Grid item xs={6}>
-							<div>{monitorStatus.hostname}</div>
-							<div>{monitorStatus.inetAddress}</div>
-							<div>{changeTime(monitorStatus.currentTime)}</div>
+							<div>{monitorInfo.app.name}</div>
+							<div>{monitorInfo.app.description}</div>
+
+							<div>{monitorInfo.build.version}</div>
+							<div>{monitorInfo.build.artifact}</div>
+							<div>{monitorInfo.build.name}</div>
+							<div>{monitorInfo.build.group}</div>
+							<div>{changeTime(monitorInfo.build.time)}</div>
 						</Grid>
 					</Grid>
 				</Box>
 				<Box {...defaultInnerBoxProps} borderBottom="0" borderRadius="0"></Box>
 				<Box {...defaultInnerBoxProps} borderTop="0">
 					<Grid container item xc={3} justify="center">
-						<MyChip name="Redis" status={monitorStatus.statusRedis} />
-						<MyChip name="System" status={monitorStatus.statusSystem} />
-						<MyChip name="Overall" status={monitorStatus.statusOverall} />
+						<MyChip name="Redis" status={monitorHealth.components.redis.status} />
+						<MyChip name="Disk" status={monitorHealth.components.diskSpace.status} />
+						<MyChip name="Ping" status={monitorHealth.components.ping.status} />
+						<MyChip name="fcBackend" status={monitorHealth.components.fcBackend.status} />
+						<MyChip name="System" status={monitorHealth.status} />
 					</Grid>
 					<Grid container item xc={2} justify="center">
 						<Chip
