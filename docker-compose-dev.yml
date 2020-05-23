@@ -5,3 +5,7 @@ services:
     ports:
     - 8000:8000
     restart: 'no'
+networks:
+  default:
+    external:
+      name: backend

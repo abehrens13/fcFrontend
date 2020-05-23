@@ -1,17 +1,9 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import { Button, ButtonGroup, Grid, Box, FormControl } from '@material-ui/core';
 import { PlaylistAddCheck, PlaylistPlay } from '@material-ui/icons/';
-import Answers from './Answers'
+import Answer from './Answer'
 
-const useStyles = makeStyles((theme) => ({
-	root: {
-		display: 'flex',
-	},
-	formControl: {
-		margin: theme.spacing(3),
-	},
-}));
+import useStyles from './../helper/useStyles'
 
 
 const defaultOuterBoxProps = {
@@ -22,6 +14,7 @@ const defaultOuterBoxProps = {
 	borderRadius: 5
 
 };
+
 const defaultInnerBoxProps = {
 	bgcolor: 'background.paper',
 	borderColor: "secondary.main",
@@ -53,7 +46,9 @@ export default function Question() {
 						<p>All around me are familiar faces Worn out places, worn out faces Bright and early for the daily races Going nowhere, going nowhere. Their tears are filling up their glasses No expression, no expression Hide my head I wanna drown my sorrow No tomorrow, no tomorrow. And I find it kind of funny I find it kind of sad</p>
 					</Box>
 					<Box {...defaultInnerBoxProps} >
-						<Answers />
+						<Answer checked={true} />
+						<Answer checked={false} />
+						<Answer />
 
 					</Box>
 					<Box {...defaultInnerBoxProps} borderTop={0} borderBottom={0}>
