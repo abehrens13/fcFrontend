@@ -16,7 +16,7 @@
     "@material-ui/icons": "^4.9.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "^2.1.8",
+    "react-scripts": "^5.0.1",
     "typeface-roboto": "0.0.75",
     "typescript": "^3.9.2",
     "superagent": "3.7.0"
